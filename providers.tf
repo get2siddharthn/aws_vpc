@@ -9,7 +9,7 @@ terraform {
 
 provider "aws" {
   #Mention access key for aws user in credential file --> /.aws/conf
-  region                   = "ap-south-1"
+  region                   = var.region
   shared_credentials_files = ["~/.aws/credentials"]
   profile                  = "terra"
 }
