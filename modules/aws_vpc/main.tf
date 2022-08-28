@@ -8,8 +8,8 @@ resource "aws_vpc" "vpc" {
   enable_dns_support   = true
 
   tags = {
-    Name        = "${var.environment}-vpc"
-    Environment = var.environment
+    Name        = "${var.env}-vpc"
+    Environment = var.env
   }
 }
 
@@ -19,8 +19,8 @@ resource "aws_vpc" "vpc" {
 resource "aws_internet_gateway" "ig" {
   vpc_id = aws_vpc.vpc.id
   tags = {
-    Name        = "${var.environment}-igw"
-    Environment = var.environment
+    Name        = "${var.env}-igw"
+    Environment = var.env
   }
 }
 
@@ -40,8 +40,8 @@ resource "aws_nat_gateway" "nat" {
   subnet_id     = element(aws_subnet.public_subnet.*.id, 0)
 
   tags = {
-    Name        = "nat"
-    Environment = "${var.environment}"
+    Name        = "${var.env}-nat"
+    Environment = "${var.env}"
   }
 }
 
@@ -56,8 +56,8 @@ resource "aws_subnet" "public_subnet" {
   map_public_ip_on_launch = true
 
   tags = {
-    Name        = "${var.environment}-${element(var.azs, count.index)}-public-subnet"
-    Environment = "${var.environment}"
+    Name        = "${var.env}-${element(var.azs, count.index)}-public-subnet"
+    Environment = "${var.env}"
   }
 }
 
@@ -72,11 +72,10 @@ resource "aws_subnet" "private_subnet" {
   map_public_ip_on_launch = false
 
   tags = {
-    Name        = "${var.environment}-${element(var.azs, count.index)}-private-subnet"
-    Environment = "${var.environment}"
+    Name        = "${var.env}-${element(var.azs, count.index)}-private-subnet"
+    Environment = "${var.env}"
   }
 }
-
 
 /****
   Routing tables to route traffic for Private Subnet
@@ -85,8 +84,8 @@ resource "aws_route_table" "private" {
   vpc_id = aws_vpc.vpc.id
 
   tags = {
-    Name        = "${var.environment}-private-route-table"
-    Environment = "${var.environment}"
+    Name        = "${var.env}-private-route-table"
+    Environment = "${var.env}"
   }
 }
 
@@ -97,8 +96,8 @@ resource "aws_route_table" "public" {
   vpc_id = aws_vpc.vpc.id
 
   tags = {
-    Name        = "${var.environment}-public-route-table"
-    Environment = "${var.environment}"
+    Name        = "${var.env}-public-route-table"
+    Environment = "${var.env}"
   }
 }
 
@@ -139,7 +138,7 @@ resource "aws_route_table_association" "private" {
   Default Security Group of VPC
 ****/
 resource "aws_security_group" "default" {
-  name        = "${var.environment}-default-sg"
+  name        = "${var.env}-default-sg"
   description = "Default SG to alllow traffic from the VPC"
   vpc_id      = aws_vpc.vpc.id
   depends_on = [
@@ -161,6 +160,6 @@ resource "aws_security_group" "default" {
   }
 
   tags = {
-    Environment = "${var.environment}"
+    Environment = "${var.env}"
   }
 }
